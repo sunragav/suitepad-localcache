@@ -56,64 +56,45 @@ class FileProviderActivity : Activity() {
             File(filesDir.path.toString() + "/" + fileName)
         println("sharing ${file.absolutePath}")
         if (!file.exists()) { // json isn't in the files dir, copy from the res/raw
-            val inputStream: InputStream? = when {
-                fileName.endsWith("json") -> resources.openRawResource(R.raw.z_output)
-                fileName.endsWith("html") -> resources.openRawResource(R.raw.sample)
-                else -> null
-            }
-            inputStream?.let {
-
-                val outputStream: FileOutputStream =
-                    openFileOutput(fileName, Context.MODE_PRIVATE)
-                val buf = ByteArray(1024)
-                var len: Int
-
-                while (it.read(buf).also { len = it } > 0) {
-                    outputStream.write(buf, 0, len)
-                }
-                outputStream.close()
-                it.close()
-
-            }
-
+            file.createNewFile()
         }
 
-        return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file)
-    }
+    return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file)
+}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        println("File provider activity started!!")
-        Thread(runnable).start()
-    }
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    println("File provider activity started!!")
+    Thread(runnable).start()
+}
 
-    private fun writeFile(file: File, content: String): Boolean {
-        var stream: FileOutputStream? = null
+private fun writeFile(file: File, content: String): Boolean {
+    var stream: FileOutputStream? = null
+    try {
+        if (!file.exists()) {
+            val created = file.createNewFile()
+            if (!created) {
+                return false
+            }
+        }
+        stream = FileOutputStream(file)
+        stream.write(content.toByteArray())
+        stream.flush()
+        stream.close()
+        return true
+    } catch (e: IOException) {
+        Log.e("provider", "IOException writing file: ", e)
+    } finally {
         try {
-            if (!file.exists()) {
-                val created = file.createNewFile()
-                if (!created) {
-                    return false
-                }
+            if (stream != null) {
+                stream.close()
             }
-            stream = FileOutputStream(file)
-            stream.write(content.toByteArray())
-            stream.flush()
-            stream.close()
-            return true
         } catch (e: IOException) {
-            Log.e("provider", "IOException writing file: ", e)
-        } finally {
-            try {
-                if (stream != null) {
-                    stream.close()
-                }
-            } catch (e: IOException) {
-                Log.e("provider", "IOException closing stream: ", e)
-            }
+            Log.e("provider", "IOException closing stream: ", e)
         }
-        return false
     }
+    return false
+}
 }
 
 
