@@ -19,8 +19,6 @@ class FileProviderActivity : Activity() {
     companion object {
         private const val APPLICATION_ID = "com.sunragav.suitepad.proxyserver"
         private const val CLASSNAME = "com.sunragav.suitepad.proxyserver.ProxyWebServer"
-        private const val REQUEST_CODE = 1
-        const val JSON_URI = "JSON_URI"
         const val GET_URI_ACTION = "com.sunragav.suitepad.GetURIAction"
     }
 
@@ -81,8 +79,6 @@ class FileProviderActivity : Activity() {
         }
 
         return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file)
-
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
