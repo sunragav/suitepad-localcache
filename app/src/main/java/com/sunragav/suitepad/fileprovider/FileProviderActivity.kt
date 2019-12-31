@@ -55,46 +55,19 @@ class FileProviderActivity : Activity() {
         val file =
             File(filesDir.path.toString() + "/" + fileName)
         println("sharing ${file.absolutePath}")
-        if (!file.exists()) { // json isn't in the files dir, copy from the res/raw
+        if (!file.exists()) { // when file is not there create an empty file so that the uri could be shared
             file.createNewFile()
         }
 
-    return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file)
-}
-
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    println("File provider activity started!!")
-    Thread(runnable).start()
-}
-
-private fun writeFile(file: File, content: String): Boolean {
-    var stream: FileOutputStream? = null
-    try {
-        if (!file.exists()) {
-            val created = file.createNewFile()
-            if (!created) {
-                return false
-            }
-        }
-        stream = FileOutputStream(file)
-        stream.write(content.toByteArray())
-        stream.flush()
-        stream.close()
-        return true
-    } catch (e: IOException) {
-        Log.e("provider", "IOException writing file: ", e)
-    } finally {
-        try {
-            if (stream != null) {
-                stream.close()
-            }
-        } catch (e: IOException) {
-            Log.e("provider", "IOException closing stream: ", e)
-        }
+        return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, file)
     }
-    return false
-}
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        println("File provider activity started!!")
+        Thread(runnable).start()
+    }
+
 }
 
 
