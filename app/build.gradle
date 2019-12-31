@@ -16,7 +16,17 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug{
+            buildConfigField('String', 'PROXY_SERVER_APPLICATION_ID', "\"${PROXY_SERVER_APPLICATION_ID}\"")
+            buildConfigField('String', 'PROXY_SERVER_CLASSNAME', "\"${PROXY_SERVER_CLASSNAME}\"")
+            buildConfigField('String', 'PROXY_SERVER_GET_URI_ACTION', "\"${PROXY_SERVER_GET_URI_ACTION}\"")
+        }
         release {
+
+            buildConfigField('String', 'PROXY_SERVER_APPLICATION_ID', "\"${PROXY_SERVER_APPLICATION_ID}\"")
+            buildConfigField('String', 'PROXY_SERVER_CLASSNAME', "\"${PROXY_SERVER_CLASSNAME}\"")
+            buildConfigField('String', 'PROXY_SERVER_GET_URI_ACTION', "\"${PROXY_SERVER_GET_URI_ACTION}\"")
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
