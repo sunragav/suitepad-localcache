@@ -9,13 +9,18 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.content.FileProvider
 import com.sunragav.suitepad.fileprovider.BuildConfig.*
+import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 
 
 class FileProviderActivity : Activity() {
 
 
-    private val runnable = Runnable {
+    private val provideUrisTask = Single.fromCallable {
 
         val clipData = ClipData(
             ClipDescription(
@@ -32,16 +37,13 @@ class FileProviderActivity : Activity() {
             )
         }
 
-        val intent =
-            Intent().also {
-                it.setClassName(PROXY_SERVER_APPLICATION_ID, PROXY_SERVER_CLASSNAME)
-                it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                it.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                it.clipData = clipData
-                it.action = PROXY_SERVER_GET_URI_ACTION
-            }
-        startService(intent)
-        finish()
+        Intent().also {
+            it.setClassName(PROXY_SERVER_APPLICATION_ID, PROXY_SERVER_CLASSNAME)
+            it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            it.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            it.clipData = clipData
+            it.action = PROXY_SERVER_GET_URI_ACTION
+        }
     }
 
     private fun shareFile(fileName: String): Uri {
@@ -55,12 +57,23 @@ class FileProviderActivity : Activity() {
         return FileProvider.getUriForFile(this, APPLICATION_ID, file)
     }
 
+    private val disposable = CompositeDisposable()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println("File provider activity started!!")
-        Thread(runnable).start()
+        provideUrisTask
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                startService(intent)
+                finish()
+            }
+            .doOnSubscribe { disposable.add(it) }
+            .subscribe()
     }
+
     override fun finish() {
+        disposable.dispose()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             super.finishAndRemoveTask()
         } else {
