@@ -21,6 +21,7 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
         <activity android:name=".FileProviderActivity"
+            android:launchMode="singleTop"
             android:permission="com.sunragav.suitepad.license.PERMISSION"
             android:exported="true"/>
     </application>

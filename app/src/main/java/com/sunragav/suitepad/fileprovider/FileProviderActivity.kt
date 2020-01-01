@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.core.content.FileProvider
 import com.sunragav.suitepad.fileprovider.BuildConfig.*
@@ -58,6 +59,13 @@ class FileProviderActivity : Activity() {
         super.onCreate(savedInstanceState)
         println("File provider activity started!!")
         Thread(runnable).start()
+    }
+    override fun finish() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            super.finishAndRemoveTask()
+        } else {
+            super.finish()
+        }
     }
 
 }
