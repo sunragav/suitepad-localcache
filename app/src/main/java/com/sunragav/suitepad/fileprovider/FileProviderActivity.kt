@@ -65,7 +65,7 @@ class FileProviderActivity : Activity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map {
-                startService(intent)
+                startService(it)
                 finish()
             }
             .doOnSubscribe { disposable.add(it) }
