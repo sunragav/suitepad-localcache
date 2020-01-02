@@ -15,6 +15,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"
             android:exported="false"
+            android:process=":com.sunragav.suitepad.fileprovider"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
@@ -22,6 +23,7 @@
         </provider>
         <activity android:name=".FileProviderActivity"
             android:launchMode="singleTop"
+            android:process=":com.sunragav.suitepad.fileprovider"
             android:permission="com.sunragav.suitepad.license.PERMISSION"
             android:exported="true"/>
     </application>

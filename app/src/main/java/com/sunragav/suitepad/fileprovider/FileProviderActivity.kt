@@ -49,7 +49,6 @@ class FileProviderActivity : Activity() {
     private fun shareFile(fileName: String): Uri {
         val file =
             File(filesDir.path.toString() + "/" + fileName)
-        println("sharing ${file.absolutePath}")
         if (!file.exists()) { // when file is not there create an empty file so that the uri could be shared
             file.createNewFile()
         }
@@ -58,9 +57,9 @@ class FileProviderActivity : Activity() {
     }
 
     private val disposable = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("File provider activity started!!")
         provideUrisTask
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
