@@ -1,6 +1,6 @@
 # suitepad-localcache
 
-## Note: Because this app uses a permission defined in the webview app, the [webview app](https://github.com/sunragav/suitepad-weview) should be installed first.
+## Note: Because the exported components in this app uses a custom permission defined in the webview app,for security reasons, the [webview app](https://github.com/sunragav/suitepad-weview) should be installed first.
 
 This is local repository and serves stored files for the other apps to consume. In this case, the other app is the [ProxyServer](https://github.com/sunragav/suitepad-proxyserver)  which runs an http server.
 
